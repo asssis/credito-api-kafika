@@ -1,5 +1,8 @@
 # 📘 Creditos API (.NET 6, Kafka, Docker, PostgreSQL)
 
+
+![2025-11-19-23-36-50 (online-video-cutter com) 00_00_00-00_00_30~1](https://github.com/user-attachments/assets/1c07637a-726b-4331-aa70-4c58d60be9eb)
+
 API RESTful desenvolvida em **.NET 6** para integração e consulta de créditos constituídos, contendo:
 
 - Publicação de mensagens no Kafka
