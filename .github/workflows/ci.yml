@@ -1,0 +1,62 @@
+name: CI - .NET Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    name: Build and Test (dotnet ${{ matrix.dotnet }}) on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        dotnet: ['6.0.x']
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.nuget/packages
+            ~/.local/share/NuGet/pkg
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', '**/packages.lock.json') }}
+          restore-keys: |
+            nuget-${{ runner.os }}-
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run tests (with TRX logger)
+        run: |
+          mkdir -p TestResults || true
+          dotnet test --no-build --configuration Release --logger "trx;LogFileName=TestResults.trx"
+        continue-on-error: false
+
+      - name: Upload test results (TRX)
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            **/TestResults/*.trx
+            **/TestResults/*.xml
+            TestResults/TestResults.trx
+
+      - name: Display test summary (if available)
+        if: always()
+        run: |
+          echo "Test run finished. TRX artifacts uploaded as 'test-results'."

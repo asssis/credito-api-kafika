@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C#: CreditApi Debug",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/CreditApi/CreditApi.csproj",
+            "launchBrowser": true,
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ConnectionStrings__DefaultConnection": "Host=localhost;Database=creditosdb;Username=postgres;Password=postgres",
+                "KAFKA__BootstrapServers": "localhost:9092"
+            },
+            "useSSL": false
+        }
+    ]
+}
